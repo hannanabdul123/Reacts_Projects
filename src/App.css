@@ -1,0 +1,107 @@
+body{
+    background-color: white;
+}
+nav{
+    display: flex;
+    justify-content: space-between;
+}
+ul{
+    list-style: none;
+    display: flex;
+    gap: 24px;
+}
+ul li a{
+    color:black ;
+}
+nav .logo1{
+    margin-left: 85px;
+   margin-top: 15px;
+}
+nav button{
+    display: flex; 
+  /* justify-content: center; /* Center horizontally */
+  /* align-items: center; */ 
+    width: 75px;
+height: 31px;
+margin-top: 21px;
+align-items: center;
+border-radius: 0;
+ background: #D01C28;
+
+
+}
+.Main-Hero{
+    display: flex;
+}
+.main-hero{
+    width: 595px;
+height: 613px;
+gap: 36px;
+opacity: 0px;
+
+}
+.main-hero h1{
+    /* font-family: Poppins; */
+    font-size: 108px;
+  font-weight: 800; 
+    line-height: 102px;
+    text-align: left;
+    width: 595px;
+   height: 306px;
+   gap: 0px;
+  opacity: 0px;
+
+
+color: #000000;
+
+}
+.main-hero{
+    margin-left: 100px;
+    margin-bottom: 100px;
+}
+p{
+
+margin-bottom: 30px;
+font-family: Poppins;
+font-size: 16px;
+font-weight: 600;
+line-height: 24px;
+text-align: left;
+color: #5A5959;
+
+}
+.btns12{
+   
+
+    display: flex;
+    width: 331px;
+    height: 41px;
+    gap: 40px;
+    opacity: 0px;
+    
+}
+.btns12 .btn2{
+    background-color: #D01C28;
+    border-radius: 0px;
+}
+.btns12 .btn3{
+    background-color:white;
+    color: black;
+    border-radius: 0px;
+    border: 1px solid #000;
+}
+.Main-Hero .Shoe {
+    margin-top: 110px;
+    margin-left: 100px;
+    width: 530px;
+    height: 487.06px;
+    gap: 0px;
+    opacity: 0px;
+    
+    gap: 0px;
+    opacity: 0px;
+    
+}
+.Img2 img {
+    margin-right: 10px; /* Add margin to all images within .Img2 */
+  }
