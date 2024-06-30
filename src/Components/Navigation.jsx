@@ -3,7 +3,7 @@
 import Contact from './Contact';
 import SearchBar from './SearchBar';
 import {db} from "../Configs/firebase";
-import { addDoc, collection,getDocs } from "firebase/firestore";
+import { addDoc, collection,doc,getDocs ,updateDoc} from "firebase/firestore";
 import Delete from './Delete';
     function Navigation() {
       const [contacts,setContacts]=useState([]);
@@ -11,8 +11,13 @@ import Delete from './Delete';
         const[isForm,SetForm]=useState(true);
         const[name,Setname]=useState('');
         const[email,Setmail]=useState('');
-       
+       const [Isupdate,Setupdate]=useState(false);
         const[isshow,Setshow]=useState(false);
+        const[Iscurrentid,Setcurrentid]=useState(null);
+
+        const [isfiltered,setfiltered]=useState([]);
+
+
         useEffect(()=>{
           const getContacts=async ()=>{
             try{
@@ -24,36 +29,68 @@ import Delete from './Delete';
                   ...doc.data(),
                 };
               });
+
              setContacts(contactList);
+             setfiltered(contactList);
              console.log(contactList);
+
             }catch(eror){
               console.log(error);
             }
           };
           getContacts();
 
-        },[]);
-        const handleShow=()=>{
+        },[isshow]);
+
+        const handleShow=(e)=>{
+          e.preventDefault();
           Setshow(!isshow);
         //   SetForm(!isForm);
         }
+
+        const handleEdit=(contact)=>{
+         
+        Setname(contact.Name);
+        Setmail(contact.Email);
+        Setupdate(true);
+        Setshow(true);
+        Setcurrentid(contact.id);
+
+        }
+        const handleSearch=(Searchitem)=>{
+           const item=Searchitem.toLowerCase();
+          const filteritem=contacts.filter(contact=>contact.Email.toLowerCase().includes(item));
+          setfiltered(filteritem);
+        }
         
-        const handleUser=(e)=>{
+        const handleUser=async(e)=>{
+
             e.preventDefault();
-            if(contacts.some(user=>user.Email.toLowerCase()==email.toLowerCase())){
+            if(contacts.some(user=>user.Email.toLowerCase()===email.toLowerCase()&& user.id !== Iscurrentid)){
                 alert('User with this email already exists');
             } else{
               try{
                 const newuser={Name:name,Email:email};
+            if(Isupdate){
+               const contactRef=doc(db,"contacts",Iscurrentid);
+               await updateDoc(contactRef,newuser);
+               setContacts(contacts.map(contact=>(contact.id===Iscurrentid ?{...contact,...newuser}:contact)))
+               
+               console.log("Update done");
 
-                 addDoc(collection(db,"contacts"),newuser);
+               Setupdate(false);
 
-              setContacts([...contacts,newuser]);
+            }
+            else{
+              console.log("New User");
+              const docsRef= await addDoc(collection(db,"contacts"),newuser);
+              setContacts([...contacts,{id:docsRef.id,...newuser}]);
+            }
                 Setname('');
                 Setmail('');
-                SetForm(false);
                 Setshow(false);
-            }catch(error){
+            
+           } catch(error){
               console.error("Error adding user: ", error);
             }
           }
@@ -63,42 +100,43 @@ import Delete from './Delete';
     return (
         <div>
       
-   <SearchBar handleShow={handleShow}/>
+   <SearchBar handleShow={handleShow} handleSearch={handleSearch}/>
     {isshow && (<Form onSubmit={handleUser}>
           <Label>Name</Label>
           <Input type='text' value={name} onChange={(e) => Setname(e.target.value)} required />
           <Label>Email</Label>
           <Input type='email' value={email} onChange={(e) => Setmail(e.target.value)} required />
-          <Button type='submit' >Add User</Button>
+          <Button type='submit' >{Isupdate ?"Update": "Add User"}</Button>
           </Form>)
     }
     <UserList>
-      {contacts.map((contact)=>
+     { isfiltered.map((contact)=>
+
       (
         <UserItem key={contact.id}>
          {console.log(contact.Name)}
           <img className='img1' src="./images/Contact.png" alt="loading..." />
-        <Text><strong>{contact.Name}  </strong>
+        <Text> <strong>{contact.Name}  </strong>
         <br />
          {contact.Email}
          </Text>
          <Icons> 
           <div className='Edtbtn'>
-          <img className='img2' src="./images/Edit.png" alt="loading..." />
+          <img className='img2' src="./images/Edit.png" alt="loading..."onClick={(e)=> { e.preventDefault();handleEdit(contact)}} />
           </div>
         
-        
          
-         {contact.id&&(<Delete setContacts={setContacts}
+         (<Delete setContacts={setContacts}
          contacts={contacts}
-         id={contact.id}/>)}
+         id={contact.id}
+         setfiltered={setfiltered}/>)
         
          
          </Icons>
         </UserItem>
-      )) }
+      ) ) }
     </UserList>
-      {isForm && <Contact/>}
+      {(contacts.length==0 && <Contact/>)||(isfiltered.length==0&&<Contact/>)}
     
         </div>
     )

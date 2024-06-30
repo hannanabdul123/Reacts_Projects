@@ -1,6 +1,8 @@
 import React from 'react'
+import {doc} from "firebase/firestore";
+import {db} from "../Configs/firebase";
 
-function Update() {
+const Update=() =>{
   return (
     <div>
 

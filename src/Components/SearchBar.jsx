@@ -5,7 +5,7 @@ import { AiFillPlusCircle } from "react-icons/ai";
 
 
 export default function 
-({handleShow}) {
+({handleShow,handleSearch}) {
   return (
     <div>
         <Box> 
@@ -16,7 +16,7 @@ export default function
     <FaSearch className='Search'/>
     </Icons>
     
-   <Input placeholder='Search Contact '/>
+   <Input placeholder='Search Contact ' onChange={(e)=>handleSearch(e.target.value)}/>
    <Circle className='Circle' onClick={handleShow}/>
    </Wrapper>
     </div>

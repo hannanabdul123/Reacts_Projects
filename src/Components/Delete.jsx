@@ -3,12 +3,13 @@ import { deleteDoc, doc } from "firebase/firestore";
 import {db} from "../Configs/firebase";
 import React from 'react'
 
-const Delete = ({setContacts,contacts,id}) => {
+const Delete = ({setContacts,contacts,id,setfiltered}) => {
     const handleDelete=async ()=>{
         try {
             console.log("Deleting docs with id: ",id);
             setContacts(contacts.filter(contact=>contact.id!==id));
             await deleteDoc(doc(db,"contacts",id));
+            setfiltered(filtered=>filtered.filter(contact => contact.id!=id));
             console.log("Deleting succesfully ",id); 
         } catch (error) {
             console.error("Error deleting document: ", error); 
